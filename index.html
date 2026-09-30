@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crazy Times AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="chat-container">
+    <h1>Crazy Times AI</h1>
+    <div id="response" class="response-box">Ask me anything...</div>
+    <textarea id="chatbox" placeholder="Type your message here..."></textarea>
+    <button onclick="sendPrompt()">Send</button>
+  </div>
+
+  <script>
+    async function sendPrompt() {
+      const chatbox = document.getElementById("chatbox");
+      const responseDiv = document.getElementById("response");
+      const userPrompt = chatbox.value.trim();
+
+      if (!userPrompt) return;
+
+      responseDiv.innerText = "Thinking...";
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: userPrompt })
+        });
+
+        const data = await res.json();
+        responseDiv.innerText = data.reply || data.error;
+      } catch (err) {
+        responseDiv.innerText = "Error connecting to server.";
+      }
+    }
+  </script>
+
+</body>
+</html>
